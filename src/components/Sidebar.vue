@@ -22,7 +22,7 @@
                 </div>
 
                 <ul v-for="type in fer.types" style="padding-left: 10px;" v-show="fer.shown&&is_expanded" v-on:click="fer.shown=true;">
-                    <div class="button" style="cursor: pointer;padding: 5px;" v-on:click="store.layer=`${fer.name}_${type.type}`;console.log(store.layer);this.$forceUpdate;">
+                    <div class="button" style="cursor: pointer;padding: 5px;" v-on:click="store.layer=`${fer.name}_${type.type}`;console.log(store.layer);this.$forceUpdate();">
                         <span class="material-icons" style="vertical-align: middle">category</span>
                         <span class="text" style="vertical-align: middle">{{ type.type }}</span>
                     </div>
