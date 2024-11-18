@@ -3,7 +3,7 @@
 </template>
 
 <script>
-const L = require('src/assets/leaflet/leaflet.js');
+import L from 'leaflet';
 import markerIcon from '@/assets/pngs/puntocheck.png';
 import { store } from '/src/components/store.js';
 

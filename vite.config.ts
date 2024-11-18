@@ -12,7 +12,6 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      leaflet: 'src/assets/leaflet/leaflet.js',
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   }
