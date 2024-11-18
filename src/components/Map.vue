@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import L from 'leaflet';
+import L from '/src/assets/leaflet/leafjet.js';
 import markerIcon from '@/assets/pngs/puntocheck.png';
 import { store } from '/src/components/store.js';
 
