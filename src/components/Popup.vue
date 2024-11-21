@@ -18,9 +18,25 @@
     </div>
 </template>
 <script>
+import g1 from '/src/assets/svg/g1.svg';
+import g1_red from '/src/assets/svg/g1_red.svg';
+import g2 from '/src/assets/svg/g2.svg';
+import g2_red from '/src/assets/svg/g2_red.svg';
+import g3 from '/src/assets/svg/g3.svg';
+import g3_red from '/src/assets/svg/g3_red.svg';
+import g4 from '/src/assets/svg/g4.svg';
+import g4_red from '/src/assets/svg/g4_red.svg';
+import g5 from '/src/assets/svg/g5.svg';
+import g5_red from '/src/assets/svg/g5_red.svg';
+import g6 from '/src/assets/svg/g6.svg';
+import g6_red from '/src/assets/svg/g6_red.svg';
+import g7 from '/src/assets/svg/g7.svg';
+import g7_red from '/src/assets/svg/g7_red.svg';
+
 export default {
     name: "Popup",
     mounted() {
+        
         this.themes = {
             "AMBIENTE E AGRICOLTURA": "g1",
             "ASSETTO IDROGEOLOGICO": "g2",
