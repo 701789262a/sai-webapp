@@ -32,7 +32,6 @@ import g6 from '/src/assets/svg/g6.svg';
 import g6_red from '/src/assets/svg/g6_red.svg';
 import g7 from '/src/assets/svg/g7.svg';
 import g7_red from '/src/assets/svg/g7_red.svg';
-
 export default {
     name: "Popup",
     mounted() {
@@ -46,21 +45,40 @@ export default {
             "ULTERIORI CONTESTI BENI IDENTITARI - Parte III del D.Lgs 42/2004 - Art. 143 comma 1 lettera e": "g6",
             "SITI UNESCO": "g7",
         }
+        this.iconMap = {
+            g1,
+            g1_red,
+            g2,
+            g2_red,
+            g3,
+            g3_red,
+            g4,
+            g4_red,
+            g5,
+            g5_red,
+            g6,
+            g6_red,
+            g7,
+            g7_red,
+        };
+
         this.mapsLink = []
         for (var theme in this.themes) {
+            let themeKey = this.themes[theme];
             var k = false;
             for (var vincolo in this.j) {
                 console.log(theme, this.j[vincolo]['tema_di_riferimento'])
                 if (this.j[vincolo]['tema_di_riferimento'] == theme) {
                     console.log('cacca')
-                    this.mapsLink.push(`/src/assets/svg/${this.themes[theme]}_red.svg`)
+                    this.mapsLink.push(this.iconMap[`${themeKey}_red`]);
+
                     k = true;
                     break
                 }
 
             }
             if (!k) {
-                this.mapsLink.push(`/src/assets/svg/${this.themes[theme]}.svg`)
+                this.mapsLink.push(this.iconMap[themeKey]);            
             }
         }
         console.log(this.mapsLink)
