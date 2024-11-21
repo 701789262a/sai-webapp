@@ -8,6 +8,7 @@ import markerIcon from '@/assets/pngs/puntocheck.png';
 import { store } from '/src/components/store.js';
 import Popup from './Popup.vue';
 import { createApp } from 'vue';
+import puntook from "/src/assets/pngs/puntook.png";
 
 export default {
   name: 'Map',
@@ -51,7 +52,7 @@ export default {
     }
     this.markerIcon = new L.Icon({
       iconUrl:
-        "/src/assets/pngs/puntook.png",
+        puntook,
       iconSize: [20, 18],
       iconAnchor: [10, 18],
       popupAnchor: [0, 75],
