@@ -11,7 +11,7 @@
         </div>
         <h3 v-show="is_expanded">Normative</h3>
         <ul v-for="law in laws">
-            <div class="button" style="cursor: pointer;padding: 5px;" v-on:click="law.shown=!law.shown;$forceUpdate();" v-show="is_expanded">
+            <div class="button" style="cursor: pointer;padding: 5px;" v-on:click="law.shown=!law.shown;$forceUpdate();store.law = law.name" v-show="is_expanded">
                 <span class="material-icons" style="vertical-align: middle">description</span>
                 <span class="text" style="vertical-align: middle">{{ law.name }}</span>
             </div>
