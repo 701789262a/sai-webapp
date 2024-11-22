@@ -1,9 +1,5 @@
 <template>
     <div class="popup-container" style="width: 260px;">
-        <div class="image-container" style="padding-bottom: 10px;">
-            <img v-for="(image, index) in this.mapsLink" :src="image" :alt="'Image ' + (image + 1)"
-                :class="String(image).includes('red') ? 'pointer' : ''" @click="showVincoli(index)" />
-        </div>
         <div style="overflow: auto;" v-bind:style="[this.isPopupOpened ? 'height:400px' : '']" >
             <ul v-for="vincolo in this.vincoli" >
                 <p style="text-align:justify; color: white;" v-text="vincolo['tema_di_riferimento']"></p>
@@ -15,6 +11,11 @@
                 <hr>
             </ul>
         </div>
+        <div class="image-container" style="padding-top: 8px; padding-bottom: 10px;">
+            <img v-for="(image, index) in this.mapsLink" :src="image" :alt="'Image ' + (image + 1)"
+                :class="String(image).includes('red') ? 'pointer' : ''" @click="showVincoli(index)" />
+        </div>
+        
     </div>
 </template>
 <script>
@@ -103,8 +104,12 @@ export default {
             }
             this.vincoli = this.vincoliClassificati
             console.log(this.vincoli)
-            this.isPopupOpened=true;
-            this.$forceUpdate()
+            if (this.vincoli.length>0){
+                this.isPopupOpened=true;
+                this.$forceUpdate()
+            }
+            
+            
         }
     },
 };

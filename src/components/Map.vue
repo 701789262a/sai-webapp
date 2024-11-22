@@ -47,9 +47,9 @@ export default {
       },
       markerIcon: new L.Icon({
         iconUrl: puntook,
-        iconSize: [24, 36],
-        iconAnchor: [12, 36],
-        popupAnchor: [0, -36],
+        iconSize: [0, 0],
+        iconAnchor: [0, 0],
+        popupAnchor: [0, 0],
       }),
     };
   },
@@ -75,15 +75,17 @@ export default {
       // Add tile layer
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
 
-      // Initialize layer group for markers
-      this.layergroup = L.layerGroup().addTo(this.map);
 
       // Handle map click events
       this.map.on('click', this.onMapClick);
     },
     async onMapClick(e) {
       try {
-        this.layergroup.clearLayers(); // Clear previous markers
+        if (this.currentPopupApp) {
+      this.currentPopupApp.unmount();
+      this.currentPopupApp = null;
+    }
+
       } catch (error) {
         console.error('Error clearing layers:', error);
       }
@@ -101,20 +103,31 @@ export default {
       const data = await response.json();
 
       // Check for valid data
-      if (!store.layer) return;
+      if (!store.layer || !data) return;
 
       // Create popup content
-      const popupContainer = document.createElement('div');
-      const popupApp = createApp(Popup, { j: data });
-      popupApp.mount(popupContainer);
+      var popupContainer = document.createElement('div');
+      this.currentPopupApp = createApp(Popup, { j: data });
+      this.currentPopupApp.mount(popupContainer);
 
       // Add marker to map
-      const marker = L.marker([e.latlng.lat, e.latlng.lng], {
+      /*var marker = L.marker([e.latlng.lat, e.latlng.lng], {
         icon: this.markerIcon,
-      }).bindPopup(popupContainer, { closeButton: false });
+      }).bindPopup(popupContainer);*/
+      if (!this.popup) {
+      this.popup = L.popup();
+    }
+
+    this.popup
+      .setLatLng(e.latlng)
+      .setContent(popupContainer)
+      .openOn(this.map);
+
+
 
       // Add marker to layer group
-      this.layergroup.addLayer(marker);
+      //this.layergroup.addLayer(marker);
+      //marker.openPopup();
     },
     loadGeoJsonLayer(layerPath) {
       if (!layerPath) return;
@@ -160,8 +173,7 @@ export default {
 }
 
 ::v-deep(.leaflet-popup-tip) {
-  width: 0px;
-  height: 0px;
+  background-color: #000;
 }
 
 ::v-deep(.svg-fill) {
