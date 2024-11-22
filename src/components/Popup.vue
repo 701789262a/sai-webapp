@@ -4,7 +4,7 @@
             <img v-for="(image, index) in this.mapsLink" :src="image" :alt="'Image ' + (image + 1)"
                 :class="String(image).includes('red') ? 'pointer' : ''" @click="showVincoli(index)" />
         </div>
-        <div style="height:600px;overflow: auto;" >
+        <div style="overflow: auto;" v-bind:style="[this.isPopupOpened ? 'height:400px' : '']" >
             <ul v-for="vincolo in this.vincoli" >
                 <p style="text-align:justify; color: white;" v-text="vincolo['tema_di_riferimento']"></p>
                 <p style="text-align:justify;color: white;" v-text="vincolo['tipologie_area']"></p>
@@ -35,7 +35,7 @@ import g7_red from '/src/assets/svg/g7_red.svg';
 export default {
     name: "Popup",
     mounted() {
-        
+        this.isPopupOpened=false;
         this.themes = {
             "AMBIENTE E AGRICOLTURA": "g1",
             "ASSETTO IDROGEOLOGICO": "g2",
@@ -103,6 +103,7 @@ export default {
             }
             this.vincoli = this.vincoliClassificati
             console.log(this.vincoli)
+            this.isPopupOpened=true;
             this.$forceUpdate()
         }
     },
@@ -161,5 +162,8 @@ p {
   background-clip: padding-box;
   border-radius: 9999px;
   background-color: #AAAAAA;
+}
+.openedPopup{
+    width:300px
 }
 </style>
