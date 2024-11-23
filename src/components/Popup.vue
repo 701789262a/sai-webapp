@@ -1,8 +1,8 @@
 <template>
     <div class="popup-container" style="width: 260px;">
-        <div style="overflow: auto;" v-bind:style="[this.isPopupOpened ? 'height:400px' : '']" >
-            <ul v-for="vincolo in this.vincoli" >
-                <p style="text-align:justify; color: white;" v-text="vincolo['tema_di_riferimento']"></p>
+        <div style="overflow: auto;" v-bind:style="[this.isPopupOpened ? 'height:400px' : '']">
+            <ul v-for="vincolo in this.vincoli">
+                <p style="text-align:justify;color: white;" v-text="vincolo['tema_di_riferimento']"></p>
                 <p style="text-align:justify;color: white;" v-text="vincolo['tipologie_area']"></p>
                 <p style="text-align:justify;color: white;" v-text="vincolo['riferimento_normativo_area']"></p>
                 <p style="text-align:justify;color: white;" v-text="vincolo['codice']"></p>
@@ -13,9 +13,9 @@
         </div>
         <div class="image-container" style="padding-top: 8px; padding-bottom: 10px;">
             <img v-for="(image, index) in this.mapsLink" :src="image" :alt="'Image ' + (image + 1)"
-                :class="String(image).includes('red') ? 'pointer' : ''" @click="showVincoli(index)" />
+                :class="this.redIndexes[index] ? 'pointer' : ''" @click="showVincoli(index)" />
         </div>
-        
+
     </div>
 </template>
 <script>
@@ -36,7 +36,7 @@ import g7_red from '/src/assets/svg/g7_red.svg';
 export default {
     name: "Popup",
     mounted() {
-        this.isPopupOpened=false;
+        this.isPopupOpened = false;
         this.themes = {
             "AMBIENTE E AGRICOLTURA": "g1",
             "ASSETTO IDROGEOLOGICO": "g2",
@@ -64,6 +64,7 @@ export default {
         };
 
         this.mapsLink = []
+        this.redIndexes = []
         for (var theme in this.themes) {
             let themeKey = this.themes[theme];
             var k = false;
@@ -72,6 +73,7 @@ export default {
                 if (this.j[vincolo]['tema_di_riferimento'] == theme) {
                     console.log('cacca')
                     this.mapsLink.push(this.iconMap[`${themeKey}_red`]);
+                    this.redIndexes.push(true);
 
                     k = true;
                     break
@@ -79,7 +81,9 @@ export default {
 
             }
             if (!k) {
-                this.mapsLink.push(this.iconMap[themeKey]);            
+                this.mapsLink.push(this.iconMap[themeKey]);
+                this.redIndexes.push(false);
+
             }
         }
         console.log(this.mapsLink)
@@ -92,11 +96,17 @@ export default {
     },
     methods: {
         showVincoli(index) {
-
+            if (this.isPopupOpened) {
+                this.vincoli=[]
+                this.isPopupOpened = false
+                this.$forceUpdate()
+                return;
+            }
             console.log(index)
             console.log(Object.keys(this.themes)[index])
             this.vincoliClassificati = []
             var targetClasseVincolo = Object.keys(this.themes)[index]
+
             for (var vincolo in this.j) {
                 if (this.j[vincolo]['tema_di_riferimento'] == targetClasseVincolo) {
                     this.vincoliClassificati.push(this.j[vincolo])
@@ -104,12 +114,12 @@ export default {
             }
             this.vincoli = this.vincoliClassificati
             console.log(this.vincoli)
-            if (this.vincoli.length>0){
-                this.isPopupOpened=true;
+            if (this.vincoli.length > 0) {
+                this.isPopupOpened = true;
                 this.$forceUpdate()
             }
-            
-            
+
+
         }
     },
 };
@@ -152,23 +162,25 @@ button {
 .pointer {
     cursor: pointer;
 }
+
 p {
-  -webkit-hyphens: auto;
-     -moz-hyphens: auto;
-          hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
 }
 
 ::-webkit-scrollbar {
-  width: 14px;
+    width: 14px;
 }
 
 ::-webkit-scrollbar-thumb {
-  border: 4px solid rgba(0, 0, 0, 0);
-  background-clip: padding-box;
-  border-radius: 9999px;
-  background-color: #AAAAAA;
+    border: 4px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: #AAAAAA;
 }
-.openedPopup{
-    width:300px
+
+.openedPopup {
+    width: 300px
 }
 </style>
