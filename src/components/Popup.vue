@@ -183,7 +183,10 @@ p {
     border-radius: 9999px;
     background-color: #AAAAAA;
 }
-
+::v-deep(.leaflet-popup-content-wrapper) {
+  background-color: #000;
+  overflow: auto; /* Ensure content doesn't overflow improperly */
+}
 .openedPopup {
     width: 300px
 }

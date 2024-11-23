@@ -62,11 +62,18 @@ button {
 		}
 	}
 }
+
 .container {
   display: flex;
   height: 100%;
   width: 100%;
+  flex-direction: row;
+
+}
+
+html, body {
+  height: 100%;
   margin: 0;
-  padding: 0;
+  overflow: hidden; /* Prevent unwanted scrolling */
 }
 </style>

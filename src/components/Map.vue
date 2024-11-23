@@ -177,7 +177,10 @@ export default {
 ::v-deep(.leaflet-popup-tip) {
   background-color: #000;
 }
-
+::v-deep(.leaflet-popup-content-wrapper) {
+  background-color: #000;
+  overflow: auto; /* Ensure content doesn't overflow improperly */
+}
 ::v-deep(.svg-fill) {
   filter: invert(1);
   color: gray;
