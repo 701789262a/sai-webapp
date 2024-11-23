@@ -50,6 +50,7 @@ button {
 }
 
 .app {
+	height: 100%;
 	display: flex;
 
 	main {
