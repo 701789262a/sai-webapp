@@ -164,6 +164,7 @@ export default {
 
 <style scoped>
 #map {
+  flex: 1 1 auto;
   position: absolute;
   z-index: 998;
 }
