@@ -1,4 +1,4 @@
-<template>
+                     <template>
     <div class="popup-container" style="width: 260px;">
         <div style="overflow: auto;" v-bind:style="[this.isPopupOpened ? 'height:400px' : '']">
             <ul v-for="vincolo in this.vincoli">
@@ -11,9 +11,9 @@
                 <hr>
             </ul>
         </div>
-        <div class="image-container" style="padding-top: 8px; padding-bottom: 10px;">
+        <div class="image-container" style="padding-top: 8px; padding-bottom: 10px;" v-bind:style="[this.isPopupOpened? 'padding-top:15px':'']">
             <img v-for="(image, index) in this.mapsLink" :src="image" :alt="'Image ' + (image + 1)"
-                :class="this.redIndexes[index] ? 'pointer' : ''" @click="showVincoli(index)" />
+                :class="this.redIndexes[index] ? 'pointer' : ''" @click="showVincoli(index,this.redIndexes[index])" />
         </div>
 
     </div>
@@ -95,13 +95,17 @@ export default {
         },
     },
     methods: {
-        showVincoli(index) {
-            if (this.isPopupOpened) {
+        showVincoli(index,goAhead) {
+            if (!goAhead){
+                return
+            }
+            if (this.isPopupOpened & this.selectedIndex==index) {
                 this.vincoli=[]
                 this.isPopupOpened = false
                 this.$forceUpdate()
                 return;
             }
+            this.selectedIndex = index
             console.log(index)
             console.log(Object.keys(this.themes)[index])
             this.vincoliClassificati = []

@@ -11,18 +11,23 @@
         </div>
         <h3 v-show="is_expanded">Normative</h3>
         <ul v-for="law in laws">
-            <div class="button" style="cursor: pointer;padding: 5px;" v-on:click="law.shown=!law.shown;$forceUpdate();store.law = law.name" v-show="is_expanded">
+            <div class="button" style="cursor: pointer;padding: 5px;"
+                v-on:click="law.shown = !law.shown; $forceUpdate(); store.law = law.name" v-show="is_expanded">
                 <span class="material-icons" style="vertical-align: middle">description</span>
                 <span class="text" style="vertical-align: middle">{{ law.name }}</span>
             </div>
-            <ul v-for="fer in law.fer" style="padding-left: 10px;" v-show="law.shown&&is_expanded" >
-                <div class="button" style="cursor: pointer;padding: 5px;" v-on:click="fer.shown=!fer.shown;$forceUpdate();">
+            <ul v-for="fer in law.fer" style="padding-left: 10px;" v-show="law.shown && is_expanded">
+                <div class="button" style="cursor: pointer;padding: 5px;"
+                    v-on:click="fer.shown = !fer.shown; $forceUpdate();">
                     <span class="material-icons" style="vertical-align: middle">eco</span>
                     <span class="text" style="vertical-align: middle">{{ fer.name }}</span>
                 </div>
 
-                <ul v-for="type in fer.types" style="padding-left: 10px;" v-show="fer.shown&&is_expanded" v-on:click="fer.shown=true;">
-                    <div class="button" style="cursor: pointer;padding: 5px;" v-on:click="store.layer=`${fer.name}_${type.type}`;console.log(store.layer);$forceUpdate();" @click="ToggleMenu">
+                <ul v-for="type in fer.types" style="padding-left: 10px;" v-show="fer.shown && is_expanded"
+                    v-on:click="fer.shown = true;">
+                    <div class="button" style="cursor: pointer;padding: 5px;"
+                        v-on:click="store.layer = `${fer.name}_${type.type}`; console.log(store.layer); $forceUpdate();"
+                        @click="ToggleMenuIfMobile">
                         <span class="material-icons" style="vertical-align: middle">category</span>
                         <span class="text" style="vertical-align: middle">{{ type.type }}</span>
                     </div>
@@ -36,7 +41,7 @@
 </template>
 
 <script setup>
-var laws = [{ name: 'Delib.G.R. n. 59/90 del 2020', shown: false,fer: [{ name: "Fotovoltaico e Termodinamico",  shown: false,types: [{ type: "Piccola taglia" }, { type: "Media taglia" }, { type: "Grande taglia" }] }, { name: "Eolico",  shown: false,types: [{ type: "Micro eolico" }, { type: "Mini eolico" }, { type: "Grande eolico (Eolico)" }] }, { name: "Biomasse",  shown: false,types: [{ type: "Piccola taglia" }, { type: "Media taglia" }, { type: "Grande taglia" }] }, { name: "Geotermico",  shown: false,types: [{ type: "Bassa entalpia" }, { type: "Media entalpia" }, { type: "Alta entalpia" }] }, { name: "Idroelettrico",  shown: false,types: [{ type: "Micro taglia" }, { type: "Mini taglia" }, { type: "Grande taglia" }] }] }]
+var laws = [{ name: 'Delib.G.R. n. 59/90 del 2020', shown: false, fer: [{ name: "Fotovoltaico e Termodinamico", shown: false, types: [{ type: "Piccola taglia" }, { type: "Media taglia" }, { type: "Grande taglia" }] }, { name: "Eolico", shown: false, types: [{ type: "Micro eolico" }, { type: "Mini eolico" }, { type: "Grande eolico (Eolico)" }] }, { name: "Biomasse", shown: false, types: [{ type: "Piccola taglia" }, { type: "Media taglia" }, { type: "Grande taglia" }] }, { name: "Geotermico", shown: false, types: [{ type: "Bassa entalpia" }, { type: "Media entalpia" }, { type: "Alta entalpia" }] }, { name: "Idroelettrico", shown: false, types: [{ type: "Micro taglia" }, { type: "Mini taglia" }, { type: "Grande taglia" }] }] }]
 import { ref } from 'vue'
 import logoURL from '/src/components/icons/italy.svg'
 const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
@@ -46,20 +51,28 @@ const ToggleMenu = () => {
     is_expanded.value = !is_expanded.value
     localStorage.setItem("is_expanded", is_expanded.value)
 }
+const ToggleMenuIfMobile = () => {
+    if (window.innerWidth < 750) {
+        is_expanded.value = !is_expanded.value
+        localStorage.setItem("is_expanded", is_expanded.value)
+    }
 
+}
 </script>
 
 <style lang="scss" scoped>
-.button:hover{
+.button:hover {
     background-color: var(--dark-alt);
 
 }
+
 aside {
     display: flex;
     flex-direction: column;
     background-color: var(--dark);
     color: var(--light);
-    width: calc(2rem + 32px); /* Collapsed width */
+    width: calc(2rem + 32px);
+    /* Collapsed width */
     overflow: hidden;
     min-height: 100vh;
     padding: 1rem;
@@ -108,7 +121,8 @@ aside {
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease-in-out;
-        animation: fadeIn 0.3s ease-in-out 0.3s forwards; /* Start fade-in after 3s */
+        animation: fadeIn 0.3s ease-in-out 0.3s forwards;
+        /* Start fade-in after 3s */
     }
 
     h3 {
@@ -134,7 +148,8 @@ aside {
                 opacity: 0;
                 visibility: hidden;
                 transition: opacity 0.3s ease-in-out;
-                animation: fadeIn 0.3s ease-in-out 0.3s forwards; /* Delayed fade-in */
+                animation: fadeIn 0.3s ease-in-out 0.3s forwards;
+                /* Delayed fade-in */
             }
 
             .text {
@@ -142,7 +157,8 @@ aside {
                 opacity: 0;
                 visibility: hidden;
                 transition: opacity 0.3s ease-in-out;
-                animation: fadeIn 0.3s ease-in-out 0.3s forwards; /* Delayed fade-in */
+                animation: fadeIn 0.3s ease-in-out 0.3s forwards;
+                /* Delayed fade-in */
                 display: inline-block;
             }
 
@@ -179,7 +195,8 @@ aside {
     }
 
     &.is-expanded {
-        width: var(--sidebar-width); /* Expanded width with smooth transition */
+        width: var(--sidebar-width);
+        /* Expanded width with smooth transition */
 
         .menu-toggle-wrap {
 
@@ -203,7 +220,7 @@ aside {
         position: absolute;
         z-index: 1000;
     }
-    
+
     .material-icons {
         transition: opacity 0.3s ease-in-out;
     }
@@ -215,12 +232,10 @@ aside {
         opacity: 0;
         visibility: hidden;
     }
+
     to {
         opacity: 1;
         visibility: visible;
     }
 }
-
-
-
 </style>
