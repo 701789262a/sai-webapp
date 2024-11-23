@@ -68,18 +68,19 @@ const ToggleMenuIfMobile = () => {
 
 aside {
     display: flex;
+    flex: 0 0 auto;
     flex-direction: column;
     background-color: var(--dark);
     color: var(--light);
     width: calc(2rem + 32px);
     /* Collapsed width */
     overflow: hidden;
-    min-height: 100vh;
+    height:100%;
     padding: 1rem;
     transition: width 0.5s ease-in-out;
 
     .flex {
-        flex: 1 1 0%;
+        flex: 0 0 auto;
     }
 
     .logo {
