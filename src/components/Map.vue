@@ -57,6 +57,14 @@ export default {
     this.initializeMap();
 
     this.$watch(
+      () => store.flyCoord,
+      () => {
+        this.flyToCoord(store.flyCoord);
+      },
+      { immediate: true }
+    );
+
+    this.$watch(
       () => store.layer,
       () => {
         this.loadGeoJsonLayer(store.layer);
@@ -80,6 +88,7 @@ export default {
       this.map.on('click', this.onMapClick);
     },
     async onMapClick(e) {
+
       try {
         if (this.currentPopupApp) {
       this.currentPopupApp.unmount();
@@ -95,7 +104,10 @@ export default {
       const dim = store.layer.split('_')[1];
       const _tipo = this.impianto[tipo];
       const _dimensione = this.dimensione[dim];
-
+if (_tipo == undefined  || _dimensione == undefined  ){
+  console.log('tipo e dimensione indefiniti')
+  return
+}
       // Fetch API data
       const response = await fetch(
         `https://sai.zeromist.net/api/getpoint?x=${e.latlng.lng}&y=${e.latlng.lat}&tipo=${_tipo}&dimensione=${_dimensione}`
@@ -128,6 +140,21 @@ export default {
       // Add marker to layer group
       //this.layergroup.addLayer(marker);
       //marker.openPopup();
+    },
+    flyToCoord(flyCoord){
+      var lat = flyCoord[0];
+      var lng = flyCoord[1];
+      console.log(flyCoord);
+      try{
+        this.map.flyTo([flyCoord[0],flyCoord[1]], 18);
+      var leaflet ={latlng:{lat:lat, lng:lng}}
+      console.log(leaflet)
+      this.onMapClick(leaflet)
+      }catch(e){
+console.log("Errore nel parsing ricerca indirizzo o coordinata")
+      }
+      
+
     },
     loadGeoJsonLayer(layerPath) {
       if (!layerPath) return;

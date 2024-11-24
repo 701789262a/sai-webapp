@@ -1,6 +1,6 @@
                      <template>
     <div class="popup-container" style="width: 260px;">
-        <div style="overflow: auto;" v-bind:style="[this.isPopupOpened ? 'height:400px' : '']">
+        <div style="overflow: auto;" v-bind:style="[this.isPopupOpened ? 'height:400px;padding-left:15px;margin-top:20px;' : '']">
             <ul v-for="vincolo in this.vincoli">
                 <p style="text-align:justify;color: white;" v-text="vincolo['tema_di_riferimento']"></p>
                 <p style="text-align:justify;color: white;" v-text="vincolo['tipologie_area']"></p>

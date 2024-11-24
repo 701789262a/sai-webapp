@@ -9,6 +9,8 @@
                 <span class="material-icons">keyboard_double_arrow_right</span>
             </button>
         </div>
+        <h3 v-show="is_expanded">Cerca coordinate o indirizzo</h3>
+        <input class="input" placeholder="e.g. 40.321388, 9.313577" v-on:keyup.enter="processInput($event)">
         <h3 v-show="is_expanded">Normative</h3>
         <ul v-for="law in laws">
             <div class="button" style="cursor: pointer;padding: 5px;"
@@ -46,7 +48,107 @@ import { ref } from 'vue'
 import logoURL from '/src/components/icons/italy.svg'
 const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
 import { store } from '/src/components/store.js'
+async function processInput(input) {
+    console.log(input.target.value)
+    // Regex per verificare se l'input sono coordinate
+    const coordRegex = /^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/;
 
+    if (coordRegex.test(input.target.value)) {
+        console.log("Coordinate rilevate: ", input.target.value);
+        try {
+            if (civico_marker != null) {
+                map.removeLayer(civico_marker);
+            }
+        } catch (e) {
+
+        }
+
+
+        const [lat, lng] = input.target.value.split(',').map(Number);
+        store.flyCoord =[lat, lng]
+
+    } else {
+        var precisionecivico
+        console.log("Indirizzo rilevato: ", input.target.value);
+
+        let nominatimData = "ko"
+        let tipoosm
+        const nominatimrequest = await fetch(`https://nominatim.openstreetmap.org/search?q=${input.target.value}&format=json&addressdetails=1&limit=1&polygon_svg=1`, { signal: AbortSignal.timeout(3000) })
+            .catch(error => {
+                console.log("nominatim errore")
+            })
+        if (nominatimrequest != null) {
+            nominatimData = await nominatimrequest.json()
+            if (nominatimData.length > 0) {
+                tipoosm = nominatimData[0].addresstype
+            }
+        }
+
+        if (nominatimData != "ko" && nominatimData.length > 0 && tipoosm === "place" || tipoosm === "house") {
+            var latok = nominatimData[0].lat
+            var lngok = nominatimData[0].lon
+            precisionecivico = nominatimData[0].addresstype
+            console.log("nominatim", latok, lngok, precisionecivico)
+            var tipogeocoding = "OSM"
+        } else {
+            const arcgisrequest = await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=pjson&outFields=Addr_type&forStorage=false&SingleLine=${input.target.value}`);
+            const arcgisData = await arcgisrequest.json();
+
+
+            if (arcgisData.candidates[0].attributes.Addr_type === "PointAddress" || arcgisData.candidates[0].attributes.Addr_type === "Subaddress") {
+                var latok = arcgisData.candidates[0].location.y
+                var lngok = arcgisData.candidates[0].location.x
+                var precisionecivico = arcgisData.candidates[0].attributes.Addr_type
+                tipogeocoding = "Esri"
+                console.log("arcgis", latok, lngok, precisionecivico)
+            } else {
+                const googlerequest = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${input.target.value}&key=AIzaSyBUuDGQcuvj7tmrCZ3ZSVgxYn3ochO21YI`);
+                const googleData = await googlerequest.json();
+
+
+                if (googleData.results[0].geometry.location_type === "ROOFTOP") {
+                    var latok = googleData.results[0].geometry.location.lat;
+                    var lngok = googleData.results[0].geometry.location.lng;
+                    precisionecivico = googleData.results[0].geometry.location_type;
+                    var tipogeocoding = "Google"
+                    console.log("google", latok, lngok, precisionecivico)
+                }
+                else {
+                    if (nominatimData != "ko" && nominatimData[0].addresstype === "road") {
+                        var latok = nominatimData[0].lat
+                        var lngok = nominatimData[0].lon
+                        precisionecivico = nominatimData[0].addresstype
+                        console.log("nominatim", latok, lngok, precisionecivico)
+                        var tipogeocoding = "Nominatim OpenStreetMap"
+                    } else {
+                        if (arcgisData.candidates[0].Addr_type === "StreetAddress" || arcgisData.candidates[0].Addr_type === "StreetAddressExt" || arcgisData.candidates[0].Addr_type === "StreetInt") {
+                            var latok = arcgisData.candidates[0].location.y
+                            var lngok = arcgisData.candidates[0].location.x
+                            precisionecivico = arcgisData.candidates[0].attributes.Addr_type
+                            var tipogeocoding = "Esri"
+                            console.log("arcgis", latok, lngok, precisionecivico)
+                        } else {
+                            var latok = googleData.results[0].geometry.location.lat;
+                            var lngok = googleData.results[0].geometry.location.lng;
+                            precisionecivico = googleData.results[0].geometry.location_type;
+                            var tipogeocoding = "Google"
+                            console.log("google", latok, lngok, precisionecivico)
+                        }
+                    }
+                }
+            }
+        }
+        try {
+            if (civico_marker != null) {
+                map.removeLayer(civico_marker);
+            }
+        } catch (e) {
+
+        }
+        console.log(latok,lngok)
+        store.flyCoord =[latok, lngok]
+    }
+}
 const ToggleMenu = () => {
     is_expanded.value = !is_expanded.value
     localStorage.setItem("is_expanded", is_expanded.value)
@@ -75,7 +177,7 @@ aside {
     width: calc(2rem + 32px);
     /* Collapsed width */
     overflow: hidden;
-    height:100%;
+    height: 100%;
     padding: 1rem;
     transition: width 0.5s ease-in-out;
 
@@ -238,5 +340,25 @@ aside {
         opacity: 1;
         visibility: visible;
     }
+}
+
+::placeholder {
+    color: rgb(101, 101, 119);
+    opacity: 1;
+    /* Firefox */
+}
+
+.input {
+
+    height: 2rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    border-color: black;
+    border-width: 0cap;
+    color: white;
+    background-color: var(--dark-alt);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    text-indent: 0.5rem;
 }
 </style>
