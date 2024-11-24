@@ -49,6 +49,7 @@ import logoURL from '/src/components/icons/italy.svg'
 const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
 import { store } from '/src/components/store.js'
 async function processInput(input) {
+    ToggleMenu();
     console.log(input.target.value)
     // Regex per verificare se l'input sono coordinate
     const coordRegex = /^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/;
