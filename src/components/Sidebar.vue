@@ -10,7 +10,7 @@
             </button>
         </div>
         <h3 v-show="is_expanded">Cerca coordinate o indirizzo</h3>
-        <input class="input" placeholder="e.g. 40.321388, 9.313577" v-on:keyup.enter="processInput($event)">
+        <input class="input" placeholder="e.g. 40.321388, 9.313577" v-on:keyup.enter="processInput($event)" v-show="is_expanded>
         <h3 v-show="is_expanded">Normative</h3>
         <ul v-for="law in laws">
             <div class="button" style="cursor: pointer;padding: 5px;"
