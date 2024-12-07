@@ -10,40 +10,54 @@
             </button>
         </div>
         <h3 v-show="is_expanded">Cerca coordinate o indirizzo</h3>
-        <input class="input" placeholder="e.g. 40.321388, 9.313577" v-on:keyup.enter="processInput($event)" v-show="is_expanded">
+        <input class="input" placeholder="e.g. 40.321388, 9.313577" v-on:keyup.enter="processInput($event)"
+            v-show="is_expanded">
         <h3 v-show="is_expanded">Normative</h3>
-        <ul v-for="law in laws">
-            <div class="button" style="cursor: pointer;padding: 5px;"
-                v-on:click="law.shown = !law.shown; $forceUpdate(); store.law = law.name" v-show="is_expanded">
-                <span class="material-icons" style="vertical-align: middle">description</span>
-                <span class="text" style="vertical-align: middle">{{ law.name }}</span>
-            </div>
-            <ul v-for="fer in law.fer" style="padding-left: 10px;" v-show="law.shown && is_expanded">
+        <div style="overflow-y: auto;">
+
+            <ul v-for="law in laws">
                 <div class="button" style="cursor: pointer;padding: 5px;"
-                    v-on:click="fer.shown = !fer.shown; $forceUpdate();">
-                    <span class="material-icons" style="vertical-align: middle">eco</span>
-                    <span class="text" style="vertical-align: middle">{{ fer.name }}</span>
+                    v-on:click="law.shown = !law.shown; $forceUpdate(); store.law = law.name; store.lawValue = law.value"
+                    v-show="is_expanded && law.enabled">
+                    <span class="material-icons" style="vertical-align: middle">description</span>
+                    <span class="text" style="vertical-align: middle">{{ law.name }}</span>
                 </div>
-
-                <ul v-for="type in fer.types" style="padding-left: 10px;" v-show="fer.shown && is_expanded"
-                    v-on:click="fer.shown = true;">
+                <ul v-for="fer in law.fer" style="padding-left: 10px;" v-show="law.shown && is_expanded">
                     <div class="button" style="cursor: pointer;padding: 5px;"
-                        v-on:click="store.layer = `${fer.name}_${type.type}`; console.log(store.layer); $forceUpdate();"
-                        @click="ToggleMenuIfMobile">
-                        <span class="material-icons" style="vertical-align: middle">category</span>
-                        <span class="text" style="vertical-align: middle">{{ type.type }}</span>
+                        v-on:click="fer.shown = !fer.shown; $forceUpdate();">
+                        <span class="material-icons" style="vertical-align: middle">eco</span>
+                        <span class="text" style="vertical-align: middle">{{ fer.name }}</span>
                     </div>
-                </ul>
 
+                    <ul v-for="type in fer.types" style="padding-left: 10px;" v-show="fer.shown && is_expanded"
+                        v-on:click="fer.shown = true;">
+                        <div class="button" style="cursor: pointer;padding: 5px;"
+                            v-on:click="store.layer = `${fer.name}_${type.type}`; console.log(store.layer); $forceUpdate();"
+                            @click="ToggleMenuIfMobile">
+                            <span class="material-icons" style="vertical-align: middle">category</span>
+                            <span class="text" style="vertical-align: middle">{{ type.type }}</span>
+                        </div>
+                    </ul>
+
+                </ul>
             </ul>
-        </ul>
+        </div>
+        <div class="bottom-button" v-show="false">
+            <div class="button" style="cursor: pointer; padding: 15px; text-align: center;border-radius: 5px;"
+                @click="handleBottomButtonClick">
+                <span class="material-icons" style="vertical-align: middle;" >question_mark</span><!-- Da sistemare con vshow = is_expanded-->
+                <span class="text" style="vertical-align: middle;" v-show="false">Informazioni</span><!-- Da sistemare con vshow = is_expanded-->
+            </div>
+        </div>
         <div class="flex"></div>
+
 
     </aside>
 </template>
 
 <script setup>
-var laws = [{ name: 'Delib.G.R. n. 59/90 del 2020', shown: false, fer: [{ name: "Fotovoltaico e Termodinamico", shown: false, types: [{ type: "Piccola taglia" }, { type: "Media taglia" }, { type: "Grande taglia" }] }, { name: "Eolico", shown: false, types: [{ type: "Micro eolico" }, { type: "Mini eolico" }, { type: "Grande eolico (Eolico)" }] }, { name: "Biomasse", shown: false, types: [{ type: "Piccola taglia" }, { type: "Media taglia" }, { type: "Grande taglia" }] }, { name: "Geotermico", shown: false, types: [{ type: "Bassa entalpia" }, { type: "Media entalpia" }, { type: "Alta entalpia" }] }, { name: "Idroelettrico", shown: false, types: [{ type: "Micro taglia" }, { type: "Mini taglia" }, { type: "Grande taglia" }] }] }]
+import sidebarjson from '/src/components/sidebar.json'
+var laws = sidebarjson
 import { ref } from 'vue'
 import logoURL from '/src/components/icons/italy.svg'
 const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
@@ -66,7 +80,7 @@ async function processInput(input) {
 
 
         const [lat, lng] = input.target.value.split(',').map(Number);
-        store.flyCoord =[lat, lng]
+        store.flyCoord = [lat, lng]
 
     } else {
         var precisionecivico
@@ -146,8 +160,8 @@ async function processInput(input) {
         } catch (e) {
 
         }
-        console.log(latok,lngok)
-        store.flyCoord =[latok, lngok]
+        console.log(latok, lngok)
+        store.flyCoord = [latok, lngok]
     }
 }
 const ToggleMenu = () => {
@@ -351,7 +365,7 @@ aside {
 
 .input {
 
-    height: 2rem;
+    height: 30px;
     border-radius: 6px;
     margin-bottom: 1rem;
     border-color: black;
@@ -361,5 +375,52 @@ aside {
     font-size: 0.875rem;
     text-transform: uppercase;
     text-indent: 0.5rem;
+}
+
+.bottom-button {
+    margin-top: auto;
+    /* Push this element to the bottom of the flex container */
+    display: flex;
+    justify-content: center;
+    padding-top: 1rem;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary);
+    color: var(--light);
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+
+    .material-icons {
+        margin-right: 0.5rem;
+    }
+
+    &:hover {
+        background-color: var(--primary-alt);
+    }
+}
+
+::-webkit-scrollbar {
+    width: 14px;
+}
+
+::-webkit-scrollbar-thumb {
+    border: 4px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: #AAAAAA;
+}
+
+::v-deep(.leaflet-popup-content-wrapper) {
+    background-color: #000;
+    overflow: auto;
+    /* Ensure content doesn't overflow improperly */
 }
 </style>

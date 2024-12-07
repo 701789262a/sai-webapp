@@ -167,13 +167,12 @@ console.log("Errore nel parsing ricerca indirizzo o coordinata")
       const tipo = layerPath.split('_')[0];
       const dim = layerPath.split('_')[1];
       const _tipo = this.impianto[tipo];
-      const _dimensione = this.dimensione[dim];
+      const _dimensione = this.dimensione[dim].replace(" ","_");
 
       const wmsOptions = {
         service: 'WMS',
         request: 'GetMap',
-        layers: `SAI:IMPIANTO ${_tipo} ${_dimensione}`,
-        srs: 'EPSG:3003',
+        layers: `${store.lawValue}:IMPIANTO_${_tipo}_${_dimensione}`,
         format: 'image/png',
         transparent: true,
         styles: 'sai_colors',
@@ -181,7 +180,7 @@ console.log("Errore nel parsing ricerca indirizzo o coordinata")
       };
 
       this.geoJsonLayer = L.tileLayer.wms(
-        'https://sai.zeromist.net/geoserver/SAI/wms',
+        `http://192.168.0.77:8080/geoserver/${store.lawValue}/wms`,
         wmsOptions
       ).addTo(this.map);
     },
