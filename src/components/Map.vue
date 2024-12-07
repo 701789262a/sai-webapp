@@ -180,7 +180,7 @@ console.log("Errore nel parsing ricerca indirizzo o coordinata")
       };
 
       this.geoJsonLayer = L.tileLayer.wms(
-        `http://192.168.0.77:8080/geoserver/${store.lawValue}/wms`,
+        `https://sai.zeromist.net/geoserver/${store.lawValue}/wms`,
         wmsOptions
       ).addTo(this.map);
     },
